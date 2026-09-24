@@ -1,0 +1,275 @@
+/* Quest Log — responsive layout for phone + tablet */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.ql-page {
+  min-height: 100vh;
+  background: #f3efe4;
+  color: #1c241c;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  padding: 20px 16px 48px;
+  overflow-x: hidden;
+}
+
+.ql-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.ql-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.ql-h1 {
+  margin: 6px 0 0;
+  font-size: clamp(28px, 6vw, 42px);
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.ql-sub {
+  margin: 8px 0 0;
+  max-width: 36rem;
+  font-size: 14px;
+  line-height: 1.45;
+  opacity: 0.7;
+}
+
+.ql-countdown {
+  background: #1c241c;
+  color: #f3efe4;
+  padding: 12px 16px;
+  border-radius: 12px;
+  min-width: 140px;
+  flex: 0 0 auto;
+}
+
+.ql-countdown strong {
+  display: block;
+  font-size: clamp(28px, 5vw, 40px);
+  font-family: Fraunces, Georgia, serif;
+  line-height: 1;
+}
+
+.ql-countdown span {
+  display: block;
+  font-size: 12px;
+  opacity: 0.65;
+  margin-top: 6px;
+}
+
+.ql-seg {
+  display: flex;
+  background: #e0d9cb;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  gap: 4px;
+}
+
+.ql-seg button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #1c241c;
+  padding: 12px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.ql-seg button.on {
+  background: #1c241c;
+  color: #f3efe4;
+}
+
+.ql-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.ql-sheet {
+  background: #fffdf6;
+  border: 2px solid #1c241c;
+  border-radius: 4px;
+  padding: 14px;
+}
+
+.ql-sheet-title {
+  font-size: 12px;
+  opacity: 0.55;
+  letter-spacing: 0.08em;
+}
+
+.ql-sheet-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 4px 0 12px;
+  font-family: Fraunces, Georgia, serif;
+}
+
+.ql-stats {
+  display: flex;
+  flex-direction: column;
+}
+
+.ql-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 7px 0;
+  border-bottom: 1px solid #ddd4c4;
+}
+
+.ql-main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ql-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ql-actions button {
+  flex: 1 1 calc(50% - 8px);
+  min-width: 140px;
+  min-height: 44px;
+}
+
+.ql-cal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.ql-cal-card {
+  background: #fffdf6;
+  border: 2px solid #1c241c;
+  border-radius: 4px;
+  padding: 14px;
+  min-width: 0;
+}
+
+.ql-cal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: min(60vh, 520px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tablet portrait & below: stack adventurer above quests */
+@media (max-width: 900px) {
+  .ql-page {
+    padding: 16px 14px 40px;
+  }
+
+  .ql-header {
+    align-items: stretch;
+  }
+
+  .ql-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-sheet {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    align-items: start;
+  }
+
+  .ql-sheet-head {
+    grid-column: 1 / -1;
+  }
+
+  .ql-sheet-name {
+    margin-bottom: 4px;
+  }
+
+  .ql-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+    grid-column: 1 / -1;
+  }
+
+  .ql-sheet-foot {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .ql-sheet-foot > div {
+    margin-top: 0;
+  }
+
+  .ql-sheet-foot button {
+    margin-top: 0 !important;
+    min-height: 44px;
+  }
+
+  .ql-sheet-note {
+    grid-column: 1 / -1;
+  }
+
+  .ql-cal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-seg button {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 560px) {
+  .ql-page {
+    padding: 14px 12px 40px;
+  }
+
+  .ql-countdown {
+    width: 100%;
+  }
+
+  .ql-sheet {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-sheet-foot {
+    grid-template-columns: 1fr;
+  }
+
+  .ql-seg button {
+    font-size: 12px;
+    padding: 11px 8px;
+  }
+
+  .ql-actions button {
+    flex: 1 1 100%;
+  }
+}

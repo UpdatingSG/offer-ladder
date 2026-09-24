@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Offer Ladder · XP logic prototype</title>
+    <style>
+      :root {
+        font-family: system-ui, sans-serif;
+        color: #1a1a1a;
+        background: #f4f2ed;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        max-width: 820px;
+        margin-inline: auto;
+      }
+      h1 {
+        margin: 0 0 6px;
+        font-size: 1.5rem;
+      }
+      .q {
+        background: #fff;
+        border: 1px solid #ddd8ce;
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 14px;
+        font-size: 0.95rem;
+      }
+      .state {
+        background: #fff;
+        border: 1px solid #ddd8ce;
+        border-radius: 10px;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .state div strong {
+        display: block;
+        font-size: 1.1rem;
+      }
+      .state div span {
+        font-size: 0.75rem;
+        color: #5c5a55;
+      }
+      .event {
+        grid-column: 1 / -1;
+        background: #eef6f0;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+      .free,
+      .walk {
+        background: #fff;
+        border: 1px solid #ddd8ce;
+        border-radius: 10px;
+        padding: 14px;
+        margin-bottom: 14px;
+      }
+      button {
+        font: inherit;
+        margin: 4px 6px 4px 0;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #cfc9bc;
+        background: #faf9f6;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #1f3d2b;
+        color: #fff;
+        border-color: #1f3d2b;
+      }
+      button:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+      .tabs button.on {
+        background: #1f3d2b;
+        color: #fff;
+      }
+      .proto-tag {
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #8a6a2b;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="proto-tag">PROTOTYPE · throwaway · double-click to run</p>
+    <h1>Offer Ladder — XP / streak / rest rules</h1>
+    <div class="q">
+      <strong>Question:</strong> Can XP + streak + rest tokens reward daily minimums
+      <em>without</em> punishing rest days or 10–12h office days?
+    </div>
+
+    <div id="state" class="state"></div>
+
+    <section class="free">
+      <h2>Free play</h2>
+      <p>Poke the model in any order. Watch the state panel.</p>
+      <div id="free"></div>
+    </section>
+
+    <section class="walk">
+      <h2>Guided walkthroughs</h2>
+      <div class="tabs" id="tabs"></div>
+      <p id="scenario-desc"></p>
+      <div id="scenario-steps"></div>
+    </section>
+
+    <script>
+      // ——— portable module (lift into app later) ———
+      const XP_PER_LEVEL = 100
+      const RUNGS = [
+        'Settle',
+        'Pattern fluent',
+        'Design verbal',
+        'Apply ready',
+        'Interviewing',
+        'Offer ladder',
+      ]
+
+      function initialGame(date) {
+        return {
+          date: date || '2026-09-25',
+          mode: 'work',
+          studyDone: false,
+          bodyDone: false,
+          xp: 20,
+          level: 1,
+          streak: 0,
+          restTokens: 2,
+          appsSent: 0,
+          lastEvent: 'Fresh day. Hit study + body for full clear.',
+          rung: 0,
+        }
+      }
+
+      function addXp(state, amount, why) {
+        let xp = state.xp + amount
+        let level = state.level
+        let rung = state.rung
+        while (xp >= XP_PER_LEVEL) {
+          xp -= XP_PER_LEVEL
+          level += 1
+          rung = Math.min(RUNGS.length - 1, rung + (level % 2 === 0 ? 1 : 0))
+        }
+        return { ...state, xp, level, rung, lastEvent: why + ' (+' + amount + ' XP)' }
+      }
+
+      function dayCleared(state) {
+        if (state.mode === 'rest' || state.mode === 'long_work') return true
+        return state.studyDone && state.bodyDone
+      }
+
+      function reduceGame(state, action) {
+        switch (action.type) {
+          case 'RESET':
+            return initialGame(state.date)
+          case 'MARK_WORK':
+            return { ...state, mode: 'work', lastEvent: 'Work day — minimums active.' }
+          case 'MARK_REST': {
+            if (state.mode === 'rest') return state
+            if (state.restTokens <= 0) {
+              return {
+                ...state,
+                lastEvent: 'No rest tokens left this week. Long-work still OK.',
+              }
+            }
+            return addXp(
+              {
+                ...state,
+                mode: 'rest',
+                restTokens: state.restTokens - 1,
+                studyDone: true,
+                bodyDone: true,
+                streak: state.streak + 1,
+              },
+              5,
+              'Rest day logged (streak safe)',
+            )
+          }
+          case 'MARK_LONG_WORK':
+            return addXp(
+              {
+                ...state,
+                mode: 'long_work',
+                studyDone: true,
+                bodyDone: true,
+                streak: state.streak + 1,
+              },
+              8,
+              'Long office day — floor waived',
+            )
+          case 'COMPLETE_STUDY': {
+            if (state.mode !== 'work' || state.studyDone) return state
+            let s = addXp({ ...state, studyDone: true }, 40, 'Study quest cleared')
+            if (s.studyDone && s.bodyDone) {
+              s = addXp({ ...s, streak: s.streak + 1 }, 25, 'Full clear bonus · streak +1')
+            }
+            return s
+          }
+          case 'COMPLETE_BODY': {
+            if (state.mode !== 'work' || state.bodyDone) return state
+            let s = addXp({ ...state, bodyDone: true }, 20, 'Body quest cleared')
+            if (s.studyDone && s.bodyDone) {
+              s = addXp({ ...s, streak: s.streak + 1 }, 25, 'Full clear bonus · streak +1')
+            }
+            return s
+          }
+          case 'SEND_APP':
+            return addXp(
+              { ...state, appsSent: state.appsSent + 1, rung: Math.max(state.rung, 3) },
+              50,
+              'Application #' + (state.appsSent + 1) + ' sent',
+            )
+          case 'ADVANCE_DAY': {
+            const cleared = dayCleared(state)
+            const d = new Date(state.date + 'T12:00:00')
+            d.setDate(d.getDate() + 1)
+            const nextDate = d.toISOString().slice(0, 10)
+            const monday = d.getDay() === 1
+            return {
+              ...initialGame(nextDate),
+              xp: state.xp,
+              level: state.level,
+              rung: state.rung,
+              appsSent: state.appsSent,
+              streak: cleared ? state.streak : 0,
+              restTokens: monday ? 2 : state.restTokens,
+              lastEvent: cleared
+                ? 'Advanced to ' + nextDate + '. Streak held.'
+                : 'Advanced to ' + nextDate + '. Streak broke.',
+            }
+          }
+          default:
+            return state
+        }
+      }
+      // ——— end portable module ———
+
+      let state = initialGame()
+      let walkIdx = 0
+      let stepIdx = 0
+
+      const scenarios = [
+        {
+          id: 'happy',
+          title: 'Happy path',
+          desc: 'Clear study + body on a normal day, then advance. Streak should rise and stay.',
+          steps: [
+            { type: 'COMPLETE_STUDY', label: '1. Clear study' },
+            { type: 'COMPLETE_BODY', label: '2. Clear body (full-clear bonus)' },
+            { type: 'ADVANCE_DAY', label: '3. Next day — streak holds' },
+          ],
+        },
+        {
+          id: 'office',
+          title: 'Brutal office day',
+          desc: '10–12h work — study waived, streak should still climb.',
+          steps: [
+            { type: 'MARK_LONG_WORK', label: '1. Mark long office' },
+            { type: 'ADVANCE_DAY', label: '2. Next day — streak held' },
+          ],
+        },
+        {
+          id: 'rest-cap',
+          title: 'Rest token cap',
+          desc: 'Two rests are fine. Third rest in the same week should be blocked.',
+          steps: [
+            { type: 'MARK_REST', label: '1. Rest #1' },
+            { type: 'ADVANCE_DAY', label: '2. Next day' },
+            { type: 'MARK_REST', label: '3. Rest #2' },
+            { type: 'ADVANCE_DAY', label: '4. Next day' },
+            { type: 'MARK_REST', label: '5. Rest #3 — should fail' },
+          ],
+        },
+        {
+          id: 'break',
+          title: 'Streak break',
+          desc: 'Do only study, skip body, advance — streak should reset to 0.',
+          steps: [
+            { type: 'RESET', label: '1. Reset' },
+            { type: 'COMPLETE_STUDY', label: '2. Study only' },
+            { type: 'ADVANCE_DAY', label: '3. Advance — streak breaks' },
+          ],
+        },
+      ]
+
+      const freeActions = [
+        { type: 'COMPLETE_STUDY', label: 'Clear study' },
+        { type: 'COMPLETE_BODY', label: 'Clear body' },
+        { type: 'MARK_REST', label: 'Spend rest token' },
+        { type: 'MARK_LONG_WORK', label: 'Long office' },
+        { type: 'SEND_APP', label: 'Send application' },
+        { type: 'ADVANCE_DAY', label: 'Next day' },
+        { type: 'RESET', label: 'Reset' },
+      ]
+
+      function dispatch(action) {
+        state = reduceGame(state, action)
+        render()
+      }
+
+      function render() {
+        const el = document.getElementById('state')
+        el.innerHTML =
+          field('Date', state.date) +
+          field('Mode', state.mode) +
+          field('Study', state.studyDone ? 'done' : 'open') +
+          field('Body', state.bodyDone ? 'done' : 'open') +
+          field('XP', state.xp + ' / ' + XP_PER_LEVEL) +
+          field('Level', String(state.level)) +
+          field('Streak', String(state.streak)) +
+          field('Rest tokens', String(state.restTokens)) +
+          field('Apps', String(state.appsSent)) +
+          field('Rung', RUNGS[state.rung]) +
+          '<div class="event"><strong>Last event</strong><br/>' +
+          escapeHtml(state.lastEvent) +
+          '</div>'
+
+        const free = document.getElementById('free')
+        free.innerHTML = ''
+        freeActions.forEach(function (a) {
+          const b = document.createElement('button')
+          b.textContent = a.label
+          b.onclick = function () {
+            dispatch({ type: a.type })
+          }
+          free.appendChild(b)
+        })
+
+        const tabs = document.getElementById('tabs')
+        tabs.innerHTML = ''
+        scenarios.forEach(function (s, i) {
+          const b = document.createElement('button')
+          b.textContent = s.title
+          if (i === walkIdx) b.className = 'on'
+          b.onclick = function () {
+            walkIdx = i
+            stepIdx = 0
+            state = initialGame()
+            render()
+          }
+          tabs.appendChild(b)
+        })
+
+        const sc = scenarios[walkIdx]
+        document.getElementById('scenario-desc').textContent = sc.desc
+        const steps = document.getElementById('scenario-steps')
+        steps.innerHTML = ''
+        sc.steps.forEach(function (step, i) {
+          const b = document.createElement('button')
+          b.textContent = step.label
+          b.className = i === stepIdx ? 'primary' : ''
+          b.disabled = i !== stepIdx
+          b.onclick = function () {
+            dispatch({ type: step.type })
+            stepIdx = Math.min(stepIdx + 1, sc.steps.length)
+            render()
+          }
+          steps.appendChild(b)
+        })
+        if (stepIdx >= sc.steps.length) {
+          const done = document.createElement('p')
+          done.textContent = 'Scenario complete — check the state panel.'
+          steps.appendChild(done)
+        }
+      }
+
+      function field(label, value) {
+        return (
+          '<div><span>' +
+          escapeHtml(label) +
+          '</span><strong>' +
+          escapeHtml(value) +
+          '</strong></div>'
+        )
+      }
+
+      function escapeHtml(s) {
+        return String(s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+      }
+
+      render()
+    </script>
+  </body>
+</html>
