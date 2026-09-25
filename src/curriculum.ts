@@ -15,9 +15,11 @@ export type StudyAssignment = {
   minutes: number
 }
 
-/** Explicit curriculum: settle → pre-Diwali → first apply weeks. */
+/** Inclusive cutoff: DSA finished through Network Delay Time. */
+export const DSA_COMPLETED_THROUGH = '2026-09-30'
+
 export const CURRICULUM: StudyAssignment[] = [
-  // ——— Settle week (habit install) ———
+  // ——— Completed through Network Delay Time (kept for calendar history) ———
   {
     date: '2026-09-25',
     subject: 'DSA',

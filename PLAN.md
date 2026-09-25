@@ -21,8 +21,8 @@ Current CTC: **₹22 LPA**. Target join-by: **Jun 2027**. First cold apps: **mid
 Pulled from `D2DLearnings` — the plan **does not** restart Scaler/NeetCode basics.
 
 ### DSA (`dsa/`)
-- Done: NeetCode 150 foundations + Lessons 1–7 (Pattern Radar → Combos)
-- **Next:** Lesson 8 Sticky Gaps (Union-Find / Dijkstra) → spaced timed cold mediums
+- Done: NeetCode 150 foundations + Lessons 1–8 (through Sticky Gaps) + LC 684 + LC 743 Network Delay Time
+- **Next:** spaced timed cold mediums (Islands, Top-K, DP) — do not replay Lesson 8
 - Real gap: **pattern selection under pressure**, not topic coverage
 
 ### HLD (`hld/`)
