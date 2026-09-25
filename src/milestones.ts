@@ -20,7 +20,7 @@ export const INTERVIEW_MILESTONES: Milestone[] = [
     kind: 'study',
     title: 'Study block (no cold apps yet)',
     detail:
-      'DSA through Network Delay Time is done. Next: cold mediums + HLD dry-runs. Gym/home. Do NOT wait to “feel ready” forever — apps have a fixed start.',
+      'DSA Lesson 8 → cold mediums + HLD dry-runs. Gym/home. Do NOT wait to “feel ready” forever — apps have a fixed start.',
   },
   {
     id: 'diwali',

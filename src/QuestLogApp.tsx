@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useState, type CSSProperties } from 'react'
 import { format } from 'date-fns'
-import { assignmentFor, CURRICULUM, DSA_COMPLETED_THROUGH } from './curriculum'
+import { assignmentFor, CURRICULUM } from './curriculum'
 import { INTERVIEW_MILESTONES } from './milestones'
 import { daysUntilApply, PROFILE } from './plan'
 import { isStudyDay, nextCatchUp } from './progress'
@@ -13,7 +13,7 @@ import {
 import './QuestLog.css'
 
 const GAME_KEY = 'offer-ladder-quest-v1'
-const PROGRESS_KEY = 'offer-ladder-progress-v2'
+const PROGRESS_KEY = 'offer-ladder-progress-v1'
 
 type ProgressBits = {
   studyDone: Record<string, boolean>
@@ -30,37 +30,19 @@ function loadGame(): GameState {
   return initialGame()
 }
 
-function seedCompletedThrough(): Record<string, boolean> {
-  const done: Record<string, boolean> = {}
-  for (const a of CURRICULUM) {
-    if (a.date > DSA_COMPLETED_THROUGH) break
-    if (a.subject === 'DSA') done[a.date] = true
-  }
-  return done
-}
-
 function loadProgress(): ProgressBits {
   try {
     const raw = localStorage.getItem(PROGRESS_KEY)
-    if (raw) {
-      const parsed = JSON.parse(raw) as ProgressBits
-      return {
-        studyDone: { ...seedCompletedThrough(), ...parsed.studyDone },
-        studyDismissed: parsed.studyDismissed ?? {},
-      }
-    }
+    if (raw) return JSON.parse(raw) as ProgressBits
   } catch {
     /* ignore */
   }
-  return { studyDone: seedCompletedThrough(), studyDismissed: {} }
+  return { studyDone: {}, studyDismissed: {} }
 }
 
-function defaultSelected(today: string, done: Record<string, boolean>): string {
-  const todayAssign = assignmentFor(today)
-  if (todayAssign && isStudyDay(todayAssign) && !done[today]) return today
-  const next = CURRICULUM.find(
-    (a) => a.date >= today && isStudyDay(a) && !done[a.date],
-  )
+function defaultSelected(today: string): string {
+  if (assignmentFor(today)) return today
+  const next = CURRICULUM.find((a) => a.date >= today && isStudyDay(a))
   return next?.date ?? today
 }
 
@@ -68,9 +50,7 @@ export function QuestLogApp() {
   const today = format(new Date(), 'yyyy-MM-dd')
   const [state, dispatch] = useReducer(reduceGame, undefined, loadGame)
   const [progress, setProgress] = useState(loadProgress)
-  const [selected, setSelected] = useState(() =>
-    defaultSelected(today, seedCompletedThrough()),
-  )
+  const [selected, setSelected] = useState(() => defaultSelected(today))
   const [panel, setPanel] = useState<'quests' | 'calendars'>('quests')
 
   useEffect(() => {

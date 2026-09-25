@@ -15,22 +15,21 @@ export type StudyAssignment = {
   minutes: number
 }
 
-/** Inclusive cutoff: DSA finished through Network Delay Time. */
-export const DSA_COMPLETED_THROUGH = '2026-09-30'
-
+/** Explicit curriculum: settle → pre-Diwali → first apply weeks. */
 export const CURRICULUM: StudyAssignment[] = [
-  // ——— Completed through Network Delay Time (kept for calendar history) ———
+  // ——— Settle week (habit install) ———
   {
     date: '2026-09-25',
     subject: 'DSA',
-    title: 'Lesson 8 — Sticky Gaps quiz',
+    title: 'Number of Islands — last Lesson 8 drill',
     steps: [
-      'Open sticky-gap drills lesson',
-      'Do the 6-question gap-pattern quiz only (Union-Find vs Dijkstra vs BFS)',
-      'Write 1 line: when Union-Find wins vs when Dijkstra wins',
-      'Stop at 40 min even if unfinished',
+      'Done already: sticky-gap quiz, Redundant Connection, Network Delay Time',
+      'Pattern Radar 90s — disqualify Union-Find (static grid, one shot)',
+      'LC 200 Number of Islands — BFS or DFS, timed ≤35 min',
+      '5 min after: compare to the Lesson 3 island template',
+      'Stop at 40 min',
     ],
-    open: 'D2DLearnings/dsa/lessons/0011-sticky-gap-drills.html',
+    open: 'https://leetcode.com/problems/number-of-islands/',
     minutes: 40,
   },
   {
@@ -72,26 +71,23 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-09-29',
     subject: 'DSA',
-    title: 'Cold solve — Redundant Connection (Union-Find)',
+    title: 'Top-K heap medium',
     steps: [
-      '90s Pattern Radar: INPUT / GOAL / CONSTRAINT → pick pattern',
-      'Solve LC 684 Redundant Connection timed (≤35 min)',
-      'If stuck 12 min: peek approach only, finish yourself',
-      'Log: did Union-Find feel automatic? Y/N',
+      'LC 347 Top K Frequent Elements — heap, not a full sort',
+      'If that feels automatic: also LC 215 Kth Largest (20 min)',
     ],
-    open: 'https://leetcode.com/problems/redundant-connection/',
+    open: 'https://leetcode.com/problems/top-k-frequent-elements/',
     minutes: 40,
   },
   {
     date: '2026-09-30',
     subject: 'DSA',
-    title: 'Graph+heap basics → Network Delay Time',
+    title: 'DP recognition cold — House Robber / Coin Change',
     steps: [
-      'Skim graph-and-heap-basics.html (10 min max)',
-      'Solve LC 743 Network Delay Time (Dijkstra) timed',
-      'Say aloud: “BFS where queue is a min-heap on distance”',
+      'Pick ONE: LC 198 House Robber OR LC 322 Coin Change',
+      'Write state → recurrence before code',
+      'No solution video',
     ],
-    open: 'D2DLearnings/dsa/reference/graph-and-heap-basics.html',
     minutes: 45,
   },
   {
@@ -110,24 +106,21 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-10-02',
     subject: 'DSA',
-    title: 'Number of Islands — BFS review cold',
+    title: 'Backtracking cold — Subsets / Combination Sum',
     steps: [
-      'Pattern Radar first (no coding 90s)',
-      'LC 200 Number of Islands — multi-source BFS/DFS',
-      'Compare to Lesson 3 template for 5 min after',
+      'LC 78 Subsets OR LC 39 Combination Sum',
+      'Use choose → explore → unchoose template from Lesson 4',
     ],
-    open: 'https://leetcode.com/problems/number-of-islands/',
     minutes: 40,
   },
   {
     date: '2026-10-03',
     subject: 'DSA',
-    title: 'Top-K heap medium',
+    title: 'Graphs — Course Schedule / Clone Graph',
     steps: [
-      'LC 347 Top K Frequent Elements — heap not full sort',
-      'If easy: also LC 215 Kth Largest (20 min)',
+      'LC 207 Course Schedule OR LC 133 Clone Graph',
+      'Name BFS vs DFS reason before coding',
     ],
-    open: 'https://leetcode.com/problems/top-k-frequent-elements/',
     minutes: 40,
   },
   {
@@ -145,11 +138,10 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-10-05',
     subject: 'DSA',
-    title: 'DP recognition cold — House Robber / Coin Change',
+    title: 'Binary search on answer',
     steps: [
-      'Pick ONE: LC 198 House Robber OR LC 322 Coin Change',
-      'Write state → recurrence before code',
-      'No solution video',
+      'LC 875 Koko Eating Bananas OR LC 410 Split Array',
+      'State the monotonic predicate before code',
     ],
     minutes: 40,
   },
@@ -185,10 +177,10 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-10-09',
     subject: 'DSA',
-    title: 'Backtracking cold — Subsets / Combination Sum',
+    title: 'Backtracking cold — Word Search',
     steps: [
-      'LC 78 Subsets OR LC 39 Combination Sum',
-      'Use choose → explore → unchoose template from Lesson 4',
+      'LC 79 Word Search (skip if you already solved it cleanly)',
+      'Use choose → explore → unchoose, then restore the cell',
     ],
     minutes: 40,
   },
@@ -217,9 +209,9 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-10-12',
     subject: 'DSA',
-    title: 'Graphs — Course Schedule / Clone Graph',
+    title: 'Graphs — the problem you skipped Oct 3',
     steps: [
-      'LC 207 Course Schedule OR LC 133 Clone Graph',
+      'Solve the one you did not do on Oct 3 (LC 207 or LC 133)',
       'Name BFS vs DFS reason before coding',
     ],
     minutes: 40,
@@ -263,9 +255,9 @@ export const CURRICULUM: StudyAssignment[] = [
   {
     date: '2026-10-17',
     subject: 'DSA',
-    title: 'Binary search on answer',
+    title: 'Binary search on answer — second problem',
     steps: [
-      'LC 875 Koko Eating Bananas OR LC 410 Split Array',
+      'Solve the one you skipped on Oct 5 (LC 875 or LC 410)',
       'State the monotonic predicate before code',
     ],
     minutes: 45,

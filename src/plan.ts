@@ -29,11 +29,9 @@ export const PRIOR_LEARNING = {
       'Pattern Radar, Tie-Breakers, Disqualifier drills',
       'BFS, Backtracking, DP recognition, Heaps/Top-K',
       'Pattern Combos capstone (Lesson 7)',
-      'Lesson 8 Sticky Gaps (Union-Find vs Dijkstra)',
-      'LC 684 Redundant Connection',
-      'Graph+heap basics + LC 743 Network Delay Time',
+      'Lesson 8 through Network Delay Time (quiz, LC 684, LC 743)',
     ],
-    next: 'Spaced cold mediums — Islands, Top-K, DP recognition',
+    next: 'Number of Islands (last Lesson 8 drill) → then spaced cold mediums',
     open: 'https://leetcode.com/problems/number-of-islands/',
     gap: 'Approach selection under pressure + timed cold retrieval — not topic coverage',
   },
@@ -72,7 +70,7 @@ export const PHASES: Phase[] = [
     name: 'Home block · Pre-Diwali',
     start: '2026-10-02',
     end: '2026-11-08',
-    focus: 'DSA 70% (cold mediums past Network Delay Time) · Design 30% (HLD L2+) · Gym 4 + walks 2.',
+    focus: 'DSA 70% (Lesson 8 + cold mediums) · Design 30% (HLD L2+) · Gym 4 + walks 2.',
   },
   {
     id: 'apply_open',
@@ -251,7 +249,7 @@ export function tasksFor(date: Date, applicationsSent: number): TaskDef[] {
         label: 'DSA floor 35–45 min',
         detail:
           phase.id === 'settle' || phase.id === 'pre_diwali'
-            ? '1 timed medium cold solve (Pattern Radar first). Sticky Gaps + Network Delay Time are done — do not replay Lesson 8.'
+            ? '1 timed medium cold solve (Pattern Radar first). Lesson 8 through Network Delay Time is already done.'
             : '1 timed medium/hard cold solve. Speak pattern + disqualifier before code.',
         minutes: 40,
         required: true,
