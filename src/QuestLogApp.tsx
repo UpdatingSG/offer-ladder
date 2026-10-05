@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useReducer, useState, type CSSProperties } from 'react'
 import { format } from 'date-fns'
-import { assignmentFor, CURRICULUM } from './curriculum'
+import { assignmentFor, CURRICULUM, STUDY_TRACK_FROM } from './curriculum'
 import { INTERVIEW_MILESTONES } from './milestones'
 import { daysUntilApply, PROFILE } from './plan'
 import { isStudyDay, nextCatchUp } from './progress'
@@ -12,8 +12,8 @@ import {
 } from './prototype/gameReducer'
 import './QuestLog.css'
 
-const GAME_KEY = 'offer-ladder-quest-v1'
-const PROGRESS_KEY = 'offer-ladder-progress-v1'
+const GAME_KEY = 'offer-ladder-quest-v2'
+const PROGRESS_KEY = 'offer-ladder-progress-v2'
 
 type ProgressBits = {
   studyDone: Record<string, boolean>
@@ -73,7 +73,10 @@ export function QuestLogApp() {
   }, [])
 
   const study = assignmentFor(selected)
-  const studyRows = useMemo(() => CURRICULUM.filter(isStudyDay), [])
+  const studyRows = useMemo(
+    () => CURRICULUM.filter((a) => isStudyDay(a) && a.date >= STUDY_TRACK_FROM),
+    [],
+  )
   const catchUp = useMemo(
     () => nextCatchUp(today, progress.studyDone, progress.studyDismissed),
     [today, progress],

@@ -15,6 +15,9 @@ export type StudyAssignment = {
   minutes: number
 }
 
+/** Study catch-up and calendar list ignore dates before this (plan reset). */
+export const STUDY_TRACK_FROM = '2026-10-05'
+
 /** Explicit curriculum: settle → pre-Diwali → first apply weeks. */
 export const CURRICULUM: StudyAssignment[] = [
   // ——— Settle week (habit install) ———

@@ -50,6 +50,10 @@ Pulled from `D2DLearnings` — the plan **does not** restart Scaler/NeetCode bas
 - **Sat:** Gym + content review block  
 - **Sun:** Flexible / tour = rest  
 
+## Plan reset (5 Oct 2026)
+
+Study track restarts **today**. Sept 25–Oct 4 assignments stay in history but **no catch-up** — interview milestones (apply mid-Nov, Diwali) unchanged. Fresh XP/streak in the app after deploy (new browser storage keys).
+
 ## How to run
 
 ```bash

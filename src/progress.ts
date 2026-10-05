@@ -1,13 +1,14 @@
-import { CURRICULUM, type StudyAssignment } from './curriculum'
+import { CURRICULUM, STUDY_TRACK_FROM, type StudyAssignment } from './curriculum'
 
 /**
  * How study progression works (fixed policy):
  *
- * 1. Calendar does NOT slide. Nov 15 is still apply day even if you skipped Oct.
+ * 1. Interview calendar does NOT slide. Nov 15 is still apply day even if you skipped Oct.
  * 2. Completing day N does not rewrite day N+1 — tomorrow already has its own topic.
  * 3. Skipping a study day puts that assignment in BACKLOG (catch-up), max shown = 1.
  * 4. Flex / rest / 0-minute days never enter backlog.
  * 5. You can dismiss a backlog item (skip forever) without guilt.
+ * 6. Dates before STUDY_TRACK_FROM are archived — no catch-up (plan reset).
  */
 
 export function isStudyDay(a: StudyAssignment): boolean {
@@ -20,6 +21,7 @@ export function backlogFor(
   dismissed: Record<string, boolean>,
 ): StudyAssignment[] {
   return CURRICULUM.filter((a) => {
+    if (a.date < STUDY_TRACK_FROM) return false
     if (a.date >= todayKey) return false
     if (!isStudyDay(a)) return false
     if (studyDone[a.date]) return false
